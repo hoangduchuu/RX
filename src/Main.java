@@ -30,6 +30,21 @@ public class Main {
                 .filter(i -> i >= 5)
                 .subscribe(myObserver);
 
+
+        /// lambda way
+        source.map(s -> s.length())
+                .filter(i -> i >= 5)
+                .subscribe(
+                        returnedValue -> System.out.println("Lambda - myReturned :" + returnedValue),
+                        returnedThrow -> System.out.println("" + returnedThrow.getMessage()),
+                        () -> System.out.println("Lambda - complete"));
+
+
+        // missing observer implementation still OK
+        source.map(String::length).filter(i -> i >= 5)
+                .subscribe(i -> System.out.println("RECEIVED: " + i),
+                        Throwable::printStackTrace);
+
     }
 
 
@@ -40,5 +55,7 @@ public class Main {
             e.printStackTrace();
         }
     }
+
+    public static final String TAG = Main.class.getSimpleName();
 
 }
