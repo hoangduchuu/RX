@@ -42,8 +42,7 @@ public class Main {
 
         // missing observer implementation still OK
         source.map(String::length).filter(i -> i >= 5)
-                .subscribe(i -> System.out.println("RECEIVED: " + i),
-                        Throwable::printStackTrace);
+                .subscribe(i -> System.out.println("RECEIVED: " + i));
 
     }
 
