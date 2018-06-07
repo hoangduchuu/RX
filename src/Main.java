@@ -1,25 +1,33 @@
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-
+import io.reactivex.disposables.Disposable;
 import rx.Observable;
 import rx.Observer;
-import rx.Scheduler;
-import rx.functions.Action1;
-import rx.schedulers.Schedulers;
+import rx.Subscription;
 
 public class Main {
 
     public static void main(String[] args) {
-        List<String> companyMems = Arrays.asList("huu", "Dien", "Nam", "Bao", "Khoa");
+        Observable<String> source =
+                Observable.just("Alpha", "Beta", "Gamma", "Delta",
+                        "Epsilon");
+        Observer<Integer> myObserver = new Observer<>() {
+            @Override
+            public void onCompleted() {
+                System.out.println("done");
+            }
 
-        Observable<String> source = Observable.from(companyMems);
-        source.map(String::length) // when map --> source is a list of inteter
-                .filter(x -> x > 3)
-                .subscribe(s -> System.out.println("haveMap: " + s));
-        source // when map --> source is a list of inteter
-                .filter(x -> x.length() > 3)
-                .subscribe(s -> System.out.println("noMap:  " + s));
+            @Override
+            public void onError(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onNext(Integer integer) {
+                System.out.println("my : " + integer);
+            }
+        };
+        source.map(s -> s.length())
+                .filter(i -> i >= 5)
+                .subscribe(myObserver);
 
     }
 
