@@ -1,15 +1,17 @@
 import java.util.concurrent.TimeUnit;
 
-import io.reactivex.Observable;
+import rx.Observable;
 import rx.Single;
+import rx.functions.Func1;
 
 
 public class Main {
 
     public static void main(String[] args) {
-        Single.just("huuhoang")
-                .map(s -> s + "dep trai")
-                .subscribe(s -> System.out.println(""+s));
+        Observable<String> source =
+                Observable.just("Alpha", "Beta", "Gamma");
+        source.first(s -> s.contains("Bzeta")) //returns a Single
+                .subscribe(x -> System.out.println(x), throwable -> System.out.println("" + throwable.getMessage()));
     }
 
     public static void sleep(long millis) {
