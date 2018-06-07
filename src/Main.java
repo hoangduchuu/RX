@@ -1,20 +1,24 @@
 import rx.Observable;
+import rx.observables.ConnectableObservable;
 
 ;
 
 public class Main {
 
     public static void main(String[] args) {
-        Observable<String> source =
-                Observable.just("Alpha", "Beta", "Gamma", "Delta", "Epsilon");
-//first observer
-        source.subscribe(s -> System.out.println("Observer 1 Received: " + s));
-        System.out.println("------------------------ \n\n");
-//second observer
-        source.map(s -> s.length())
-                .filter(x->x>5)
-                .subscribe(s -> System.out.println("Observer 2 Received: " + s));
+        ConnectableObservable<String> source =
+                Observable.just("Alpha","Beta","Gamma","Delta","Epsilon")
+                       .publish();
+//Set up observer 1
+        source.subscribe(s -> System.out.println("Observer 1: " + s));
+//Set up observer 2
+        source.map(String::length)
+                .subscribe(i -> System.out.println("Observer 2: " + i));
 
+        // need call connect function to open coonect
+        source.connect();
+
+//Fire!
     }
 
 
