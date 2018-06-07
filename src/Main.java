@@ -1,3 +1,7 @@
+import java.lang.reflect.Array;
+import java.util.Arrays;
+import java.util.List;
+
 import io.reactivex.disposables.Disposable;
 import rx.Observable;
 import rx.Observer;
@@ -6,6 +10,7 @@ import rx.Subscription;
 public class Main {
 
     public static void main(String[] args) {
+        List<String> myName = Arrays.asList("1","4324","huuhoang","kka");
 
         Observable<String> source =
                 Observable.just("Alpha", "Beta", "Gamma", "Delta",
@@ -42,8 +47,7 @@ public class Main {
 
         // missing observer implementation still OK
         source.map(String::length).filter(i -> i >= 5)
-                .subscribe(i -> System.out.println("RECEIVED: " + i),
-                        Throwable::printStackTrace);
+                .subscribe(i -> System.out.println("RECEIVED: " + i));
 
     }
 
