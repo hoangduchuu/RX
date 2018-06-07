@@ -1,3 +1,5 @@
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import rx.Observable;
@@ -9,13 +11,16 @@ import rx.schedulers.Schedulers;
 public class Main {
 
     public static void main(String[] args) {
-        Observable<String> source =
-                Observable.just("Alpha", "Beta", "Gamma", "Delta",
-                        "Epsilon");
-        source.map(String::length)
-                .filter(i -> i >= 5)
-                .subscribe(s -> System.out.println("RECEIVED: " + s));
-        source.subscribe(s -> System.out.println("V2 " + s));
+        List<String> companyMems = Arrays.asList("huu", "Dien", "Nam", "Bao", "Khoa");
+
+        Observable<String> source = Observable.from(companyMems);
+        source.map(String::length) // when map --> source is a list of inteter
+                .filter(x -> x > 3)
+                .subscribe(s -> System.out.println("haveMap: " + s));
+        source // when map --> source is a list of inteter
+                .filter(x -> x.length() > 3)
+                .subscribe(s -> System.out.println("noMap:  " + s));
+
     }
 
 
