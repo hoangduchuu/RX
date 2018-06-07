@@ -1,8 +1,10 @@
 import java.util.concurrent.TimeUnit;
 
-import rx.Observable;
-import rx.Single;
-import rx.functions.Func1;
+import io.reactivex.Maybe;
+import io.reactivex.MaybeObserver;
+import io.reactivex.Observable;
+import io.reactivex.disposables.Disposable;
+
 
 
 public class Main {
@@ -10,8 +12,32 @@ public class Main {
     public static void main(String[] args) {
         Observable<String> source =
                 Observable.just("Alpha", "Beta", "Gamma");
-        source.first(s -> s.contains("Bzeta")) //returns a Single
+        source.first("abc") //returns a Single
                 .subscribe(x -> System.out.println(x), throwable -> System.out.println("" + throwable.getMessage()));
+
+        Maybe<Integer> intSource = Maybe.just(1);
+        intSource.subscribe(new MaybeObserver<Integer>() {
+            @Override
+            public void onSubscribe(Disposable disposable) {
+
+            }
+
+            @Override
+            public void onSuccess(Integer integer) {
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+
     }
 
     public static void sleep(long millis) {
