@@ -1,15 +1,15 @@
 import java.util.concurrent.TimeUnit;
 
+import io.reactivex.Observable;
+import rx.Single;
 
-;import rx.Observable;
 
 public class Main {
 
     public static void main(String[] args) {
-        Observable.interval(1, 1, TimeUnit.SECONDS)
-                .map(x -> x * 2)
-                .toBlocking()
-                .subscribe(s -> System.out.println(s+ " Mississippi"));
+        Single.just("huuhoang")
+                .map(s -> s + "dep trai")
+                .subscribe(s -> System.out.println(""+s));
     }
 
     public static void sleep(long millis) {
