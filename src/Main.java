@@ -25,12 +25,24 @@ public class Main {
     public static void main(String[] args) {
 
 
-
         // startWith is adding the first item to the dataReturned
         Observable.just("1", "22", "33", "33")
                 .startWith("init to the first")
                 .subscribe(s -> System.out.println("startWith " + s));
         //
+
+        // startWith Arrays is adding the first item to the dataReturned
+        Observable.just("1", "22", "33", "33")
+                .startWithArray("init to the first", "init to seconds")
+                .subscribe(s -> System.out.println("startWithArrays " + s));
+
+
+        // defaultIfEmpty help your item when your stream is Empty
+        Observable.just("1", "22", "33", "33")
+                .startWithArray("init to the first", "init to seconds")
+                .filter(x->x.length() >1000)
+                .defaultIfEmpty("khong co")
+                .subscribe(s -> System.out.println("defaultIfEmpty " + s));
 
     }
 
