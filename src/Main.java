@@ -37,10 +37,11 @@ public class Main {
                 .subscribe(s -> System.out.println("startWithArrays " + s));
 
 
-        // defaultIfEmpty help your item when your stream is Empty
+        // switchIfEmpty : we can put new observable stream value if condition is empty !!
         Observable.just("1", "22", "33", "33")
                 .startWithArray("init to the first", "init to seconds")
                 .filter(x->x.length() >1000)
+                .switchIfEmpty(Observable.just("Zeta", "Eta", "Theta"))
                 .defaultIfEmpty("khong co")
                 .subscribe(s -> System.out.println("defaultIfEmpty " + s));
 
