@@ -2,6 +2,7 @@ import org.reactivestreams.Subscriber;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -45,6 +46,9 @@ public class Main {
                 .defaultIfEmpty("khong co")
                 .subscribe(s -> System.out.println("defaultIfEmpty " + s));
 
+        Observable.just(6, 2, 5, 7, 1, 4, 9, 8, 3)
+                .sorted(Comparator.reverseOrder()).toList()
+                .subscribe(s-> System.out.println("sorted() " + s));
     }
 
     public static void sleep(long millis) {
