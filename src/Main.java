@@ -19,28 +19,38 @@ public class Main {
     private static final CompositeDisposable disposables
             = new CompositeDisposable();
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
+        Observable.just("Alpha", "Beta", "Gamma", "Delta", "Epsilon")
+                .filter(s -> s.length() == 4)
+                .subscribe(myObserver());
 
-        Observable<Integer> source = Observable.create(new ObservableOnSubscribe<Integer>() {
+
+    }
+
+    private static Observer<String> myObserver() {
+        return new Observer<String>() {
             @Override
-            public void subscribe(ObservableEmitter<Integer> triger) throws Exception {
-                try {
-                    for (int i = 0; i < 2; i++) {
-                        triger.onNext(i);
-                        System.out.println(i);
-
-                        if (triger.isDisposed())
-                            return;
-                    }
-                    triger.onComplete();
-                } catch (Throwable e) {
-                    triger.onError(e);
-                }
+            public void onSubscribe(Disposable disposable) {
+                System.out.println("onSubscribe");
             }
-        });
 
+            @Override
+            public void onNext(String s) {
+                System.out.println("onNext: " + s);
 
-        sleep(500);
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                System.out.println("onError");
+
+            }
+
+            @Override
+            public void onComplete() {
+                System.out.println("onComplete");
+            }
+        };
     }
 
     public static void sleep(long millis) {
