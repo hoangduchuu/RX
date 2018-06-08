@@ -1,5 +1,8 @@
 import org.reactivestreams.Subscriber;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
@@ -12,6 +15,8 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
+import io.reactivex.functions.Consumer;
 import io.reactivex.observers.ResourceObserver;
 
 
@@ -20,100 +25,49 @@ public class Main {
             = new CompositeDisposable();
 
     public static void main(String[] args) {
-        Observable.just(1, 3, 4, 32, 4, 32, 432)
-                .filter(s -> s == 4)
-                .take(2)
-                .subscribe(myObserver());
 
 
-        // take
-        Observable.just("huu", "nam", "Bao", "khoa", "dien")
-                .take(2)
-                .takeLast(2)
+        // startWith is adding the first item to the dataReturned
+        Observable.just("1", "22", "33", "33")
+                .startWith("init to the first")
+                .subscribe(s -> System.out.println("startWith " + s));
+        //
 
-                .subscribe(nameObserver());
-
-        // siki
-        Observable.just(1, 3, 4, 32, 4, 2, 2, 32, 3232, 32321)
-                .filter(s -> s != 32)
-                .skip(2)
-                .skipLast(2)
-                .subscribe(i -> System.out.println("sikip RECEIVED: " + i),
-                        t -> System.out.println(t.getMessage()),
-                        () -> System.out.println("sikip complete"));
+        // startWith Arrays is adding the first item to the dataReturned
+        Observable.just("1", "22", "33", "33")
+                .startWithArray("init to the first", "init to seconds")
+                .subscribe(s -> System.out.println("startWithArrays " + s));
 
 
-        //takeWhile and skip while is the same but ngu
-        Observable.range(1, 100)
-                .startWith(3)
-                .takeUntil(x -> x > 33)
-                .subscribe(i -> System.out.println("takeWhile : " + i));
+        // switchIfEmpty : we can put new observable stream value if condition is empty !!
+        Observable.just("1", "22", "33", "33")
+                .startWithArray("init to the first", "init to seconds")
+                .filter(x -> x.length() > 1000)
+                .switchIfEmpty(Observable.just("Zeta", "Eta", "Theta"))
+                .defaultIfEmpty("khong co")
+                .subscribe(s -> System.out.println("defaultIfEmpty " + s));
 
-        //  .distinct()
+        Observable.just(6, 2, 5, 7, 1, 4, 9, 8, 3)
+                .sorted(Comparator.reverseOrder()).toList()
+                .subscribe(s -> System.out.println("sorted() " + s));
+        // repeat will run again
         Observable.just("Alpha", "Beta", "Gamma", "Delta",
-                "Epsilon", "Alpha", "huu", "huu", "hoandg")
-                .distinct()
-                .subscribe(i -> System.out.println("distinct: " + i));
-//  .distinct()
-        Observable.just("Alpha", "Beta", "Gamma", "Delta",
-                "Epsilon", "Alpha", "huu", "huu", "hoang")
-                .distinct(s->s.length())
-                .subscribe(i -> System.out.println("distinct condition : " + i));
+                "Epsilon", "-------------")
+//                .delay(3, TimeUnit.SECONDS)
+                .delay(1, TimeUnit.SECONDS)
+                .toMap(s -> s.length() + "keyLeng", value -> value)
+                .doOnSuccess(s -> System.out.println("doOnSuccess " + s))
+                .doOnError(e -> System.out.println("doOnError " + e))
+                .doOnSubscribe(d -> System.out.println("doOnSubscribe " + d.isDisposed()))
+                .doAfterSuccess(d -> System.out.println("doAfterSuccess " + d))
+                .doFinally(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        System.out.println("finaly");
+                    }
+                });
 
-    }
-
-    // take
-    private static Observer<String> nameObserver() {
-        return new Observer<>() {
-            @Override
-            public void onSubscribe(Disposable disposable) {
-                System.out.println("name onSubscribe");
-            }
-
-            @Override
-            public void onNext(String s) {
-                System.out.println("name onNext " + s);
-
-            }
-
-            @Override
-            public void onError(Throwable onError) {
-                System.out.println("name onError " + onError.getMessage());
-
-            }
-
-            @Override
-            public void onComplete() {
-                System.out.println("name onComplete ");
-            }
-        };
-    }
-
-    private static Observer<Integer> myObserver() {
-        return new Observer<>() {
-            @Override
-            public void onSubscribe(Disposable disposable) {
-                System.out.println("onSubscribe");
-            }
-
-
-            @Override
-            public void onNext(Integer s) {
-                System.out.println("onNext: " + s);
-
-            }
-
-            @Override
-            public void onError(Throwable throwable) {
-                System.out.println("onError");
-
-            }
-
-            @Override
-            public void onComplete() {
-                System.out.println("onComplete");
-            }
-        };
+        sleep(5000);
     }
 
     public static void sleep(long millis) {
