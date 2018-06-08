@@ -35,12 +35,18 @@ public class Main {
 
         // siki
         Observable.just(1, 3, 4, 32, 4, 2, 2, 32, 3232, 32321)
-                .filter(s->s!=32)
+                .filter(s -> s != 32)
                 .skip(2)
                 .skipLast(2)
                 .subscribe(i -> System.out.println("sikip RECEIVED: " + i),
                         t -> System.out.println(t.getMessage()),
                         () -> System.out.println("sikip complete"));
+
+
+        //takeWhile and skip while is the same but ngu
+        Observable.range(3, 100)
+                .skipWhile(i -> i <= 20)
+                .subscribe(i -> System.out.println("takeWhile : " + i));
 
 
     }
