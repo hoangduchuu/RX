@@ -9,52 +9,35 @@ import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.ResourceObserver;
 
 
 public class Main {
 
     public static void main(String[] args) throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1000);
-
-        Observable
-                .interval(1, 1, TimeUnit.SECONDS)
-                .take(100)
-                .subscribe(new Observer<Long>() {
-                    private Disposable disposable;
-
+        Observable<Long> source =
+                Observable.interval(1, TimeUnit.SECONDS);
+        ResourceObserver<Long> myObserver = new
+                ResourceObserver<Long>() {
                     @Override
-                    public void onSubscribe(Disposable disposable) {
-                        this.disposable = disposable;
-
-                        System.out.println("onSubscribe");
-
+                    public void onNext(Long value) {
+                        System.out.println(value);
                     }
 
                     @Override
-                    public void onNext(Long aLong) {
-                        latch.countDown();
-                        System.out.println("onNext along: " + aLong + "--cound: - " + latch.getCount());
-                        if (aLong == 2){
-                            disposable.dispose();
-                        }
-
-                    }
-
-                    @Override
-                    public void onError(Throwable throwable) {
-                        System.out.println("onerrors");
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
                     }
 
                     @Override
                     public void onComplete() {
-                        System.out.println("oncomplete");
+
                     }
-                });
 
-//        latch.await();
+                };
+        //capture Disposable
+        Disposable disposable = source.subscribeWith(myObserver);
         sleep(5000);
-
-
     }
 
     public static void sleep(long millis) {
