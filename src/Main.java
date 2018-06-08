@@ -51,7 +51,7 @@ public class Main {
 
         //  .distinct()
         Observable.just("Alpha", "Beta", "Gamma", "Delta",
-                "Epsilon", "Alpha", "huu", "huu", "hoang")
+                "Epsilon", "Alpha", "huu", "huu", "hoandg")
                 .distinct()
                 .subscribe(i -> System.out.println("distinct: " + i));
 //  .distinct()
