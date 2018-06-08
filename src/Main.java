@@ -15,6 +15,7 @@ import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Action;
 import io.reactivex.functions.Consumer;
 import io.reactivex.observers.ResourceObserver;
 
@@ -51,11 +52,20 @@ public class Main {
                 .subscribe(s -> System.out.println("sorted() " + s));
         // repeat will run again
         Observable.just("Alpha", "Beta", "Gamma", "Delta",
-                "Epsilon","-------------")
+                "Epsilon", "-------------")
 //                .delay(3, TimeUnit.SECONDS)
-                .repeat(3)
-                .delay(1,TimeUnit.SECONDS)
-                .subscribe(s -> System.out.println("repeat(): " + s));
+                .delay(1, TimeUnit.SECONDS)
+                .toMap(s -> s.length() + "keyLeng", value -> value)
+                .doOnSuccess(s -> System.out.println("doOnSuccess " + s))
+                .doOnError(e -> System.out.println("doOnError " + e))
+                .doOnSubscribe(d -> System.out.println("doOnSubscribe " + d.isDisposed()))
+                .doAfterSuccess(d -> System.out.println("doAfterSuccess " + d))
+                .doFinally(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        System.out.println("finaly");
+                    }
+                });
 
         sleep(5000);
     }
