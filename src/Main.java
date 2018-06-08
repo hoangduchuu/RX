@@ -46,9 +46,19 @@ public class Main {
         //takeWhile and skip while is the same but ngu
         Observable.range(1, 100)
                 .startWith(3)
-                .takeUntil(x -> x > 33).toList()
+                .takeUntil(x -> x > 33)
                 .subscribe(i -> System.out.println("takeWhile : " + i));
 
+        //  .distinct()
+        Observable.just("Alpha", "Beta", "Gamma", "Delta",
+                "Epsilon", "Alpha", "huu", "huu", "hoang")
+                .distinct()
+                .subscribe(i -> System.out.println("distinct: " + i));
+//  .distinct()
+        Observable.just("Alpha", "Beta", "Gamma", "Delta",
+                "Epsilon", "Alpha", "huu", "huu", "hoang")
+                .distinct(s->s.length())
+                .subscribe(i -> System.out.println("distinct condition : " + i));
 
     }
 
