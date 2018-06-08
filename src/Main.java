@@ -41,14 +41,23 @@ public class Main {
         // switchIfEmpty : we can put new observable stream value if condition is empty !!
         Observable.just("1", "22", "33", "33")
                 .startWithArray("init to the first", "init to seconds")
-                .filter(x->x.length() >1000)
+                .filter(x -> x.length() > 1000)
                 .switchIfEmpty(Observable.just("Zeta", "Eta", "Theta"))
                 .defaultIfEmpty("khong co")
                 .subscribe(s -> System.out.println("defaultIfEmpty " + s));
 
         Observable.just(6, 2, 5, 7, 1, 4, 9, 8, 3)
                 .sorted(Comparator.reverseOrder()).toList()
-                .subscribe(s-> System.out.println("sorted() " + s));
+                .subscribe(s -> System.out.println("sorted() " + s));
+        // repeat will run again
+        Observable.just("Alpha", "Beta", "Gamma", "Delta",
+                "Epsilon","-------------")
+//                .delay(3, TimeUnit.SECONDS)
+                .repeat(3)
+                .delay(1,TimeUnit.SECONDS)
+                .subscribe(s -> System.out.println("repeat(): " + s));
+
+        sleep(5000);
     }
 
     public static void sleep(long millis) {
