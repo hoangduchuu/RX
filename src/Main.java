@@ -19,28 +19,101 @@ public class Main {
     private static final CompositeDisposable disposables
             = new CompositeDisposable();
 
-    public static void main(String[] args) throws InterruptedException {
+    public static void main(String[] args) {
+        Observable.just(1, 3, 4, 32, 4, 32, 432)
+                .filter(s -> s == 4)
+                .take(2)
+                .subscribe(myObserver());
 
-        Observable<Integer> source = Observable.create(new ObservableOnSubscribe<Integer>() {
+
+        // take
+        Observable.just("huu", "nam", "Bao", "khoa", "dien")
+                .take(2)
+                .takeLast(2)
+
+                .subscribe(nameObserver());
+
+        // siki
+        Observable.just(1, 3, 4, 32, 4, 2, 2, 32, 3232, 32321)
+                .filter(s -> s != 32)
+                .skip(2)
+                .skipLast(2)
+                .subscribe(i -> System.out.println("sikip RECEIVED: " + i),
+                        t -> System.out.println(t.getMessage()),
+                        () -> System.out.println("sikip complete"));
+
+
+        //takeWhile and skip while is the same but ngu
+        Observable.range(1, 100)
+                .startWith(3)
+                .takeUntil(x -> x > 33)
+                .subscribe(i -> System.out.println("takeWhile : " + i));
+
+        //  .distinct()
+        Observable.just("Alpha", "Beta", "Gamma", "Delta",
+                "Epsilon", "Alpha", "huu", "huu", "hoandg")
+                .distinct()
+                .subscribe(i -> System.out.println("distinct: " + i));
+//  .distinct()
+        Observable.just("Alpha", "Beta", "Gamma", "Delta",
+                "Epsilon", "Alpha", "huu", "huu", "hoang")
+                .distinct(s->s.length())
+                .subscribe(i -> System.out.println("distinct condition : " + i));
+
+    }
+
+    // take
+    private static Observer<String> nameObserver() {
+        return new Observer<>() {
             @Override
-            public void subscribe(ObservableEmitter<Integer> triger) throws Exception {
-                try {
-                    for (int i = 0; i < 2; i++) {
-                        triger.onNext(i);
-                        System.out.println(i);
-
-                        if (triger.isDisposed())
-                            return;
-                    }
-                    triger.onComplete();
-                } catch (Throwable e) {
-                    triger.onError(e);
-                }
+            public void onSubscribe(Disposable disposable) {
+                System.out.println("name onSubscribe");
             }
-        });
+
+            @Override
+            public void onNext(String s) {
+                System.out.println("name onNext " + s);
+
+            }
+
+            @Override
+            public void onError(Throwable onError) {
+                System.out.println("name onError " + onError.getMessage());
+
+            }
+
+            @Override
+            public void onComplete() {
+                System.out.println("name onComplete ");
+            }
+        };
+    }
+
+    private static Observer<Integer> myObserver() {
+        return new Observer<>() {
+            @Override
+            public void onSubscribe(Disposable disposable) {
+                System.out.println("onSubscribe");
+            }
 
 
-        sleep(500);
+            @Override
+            public void onNext(Integer s) {
+                System.out.println("onNext: " + s);
+
+            }
+
+            @Override
+            public void onError(Throwable throwable) {
+                System.out.println("onError");
+
+            }
+
+            @Override
+            public void onComplete() {
+                System.out.println("onComplete");
+            }
+        };
     }
 
     public static void sleep(long millis) {
