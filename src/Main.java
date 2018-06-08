@@ -20,22 +20,59 @@ public class Main {
             = new CompositeDisposable();
 
     public static void main(String[] args) {
-        Observable.just("Alpha", "Beta", "Gamma", "Delta", "Epsilon")
-                .filter(s -> s.length() == 4)
+        Observable.just(1, 3, 4, 32, 4, 32, 432)
+                .filter(s -> s == 4)
+                .take(2)
                 .subscribe(myObserver());
+
+
+        // take
+        Observable.just("huu", "nam", "Bao", "khoa", "dien")
+                .take(2)
+                .takeLast(2)
+
+                .subscribe(nameObserver());
 
 
     }
 
-    private static Observer<String> myObserver() {
-        return new Observer<String>() {
+    // take 
+    private static Observer<String> nameObserver() {
+        return new Observer<>() {
+            @Override
+            public void onSubscribe(Disposable disposable) {
+                System.out.println("name onSubscribe");
+            }
+
+            @Override
+            public void onNext(String s) {
+                System.out.println("name onNext " + s);
+
+            }
+
+            @Override
+            public void onError(Throwable onError) {
+                System.out.println("name onError " + onError.getMessage());
+
+            }
+
+            @Override
+            public void onComplete() {
+                System.out.println("name onComplete ");
+            }
+        };
+    }
+
+    private static Observer<Integer> myObserver() {
+        return new Observer<>() {
             @Override
             public void onSubscribe(Disposable disposable) {
                 System.out.println("onSubscribe");
             }
 
+
             @Override
-            public void onNext(String s) {
+            public void onNext(Integer s) {
                 System.out.println("onNext: " + s);
 
             }
