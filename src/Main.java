@@ -8,36 +8,31 @@ import io.reactivex.CompletableObserver;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
 import io.reactivex.Observer;
+import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
-import io.reactivex.observers.ResourceObserver;
 
 
 public class Main {
+    private static final CompositeDisposable disposables
+            = new CompositeDisposable();
 
     public static void main(String[] args) throws InterruptedException {
-        Observable<Long> source =
+        CountDownLatch latch = new CountDownLatch(1000);
+
+        Observable<Long> seconds =
                 Observable.interval(1, TimeUnit.SECONDS);
-        ResourceObserver<Long> myObserver = new
-                ResourceObserver<Long>() {
-                    @Override
-                    public void onNext(Long value) {
-                        System.out.println(value);
-                    }
-
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-
-                    @Override
-                    public void onComplete() {
-
-                    }
-
-                };
-        //capture Disposable
-        Disposable disposable = source.subscribeWith(myObserver);
+        Disposable disposable1 = seconds.subscribe(l -> System.out.println("Observer 1: " + l));
+        Disposable disposable2 = seconds.subscribe(l -> System.out.println("Observer 2: " + l));
         sleep(5000);
+        disposables.addAll(disposable1, disposable2);
+        disposables.dispose();
+        //sleep 5 seconds to prove
+        //there are no more emissions
+        sleep(5000);
+
+//        latch.await();
+
+
     }
 
     public static void sleep(long millis) {
