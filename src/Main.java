@@ -44,8 +44,9 @@ public class Main {
 
 
         //takeWhile and skip while is the same but ngu
-        Observable.range(3, 100)
-                .skipWhile(i -> i <= 20)
+        Observable.range(1, 100)
+                .startWith(3)
+                .takeUntil(x -> x > 33).toList()
                 .subscribe(i -> System.out.println("takeWhile : " + i));
 
 
