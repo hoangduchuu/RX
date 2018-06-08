@@ -7,6 +7,8 @@ import io.reactivex.Completable;
 import io.reactivex.CompletableObserver;
 import io.reactivex.Maybe;
 import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
@@ -18,22 +20,27 @@ public class Main {
             = new CompositeDisposable();
 
     public static void main(String[] args) throws InterruptedException {
-        CountDownLatch latch = new CountDownLatch(1000);
 
-        Observable<Long> seconds =
-                Observable.interval(1, TimeUnit.SECONDS);
-        Disposable disposable1 = seconds.subscribe(l -> System.out.println("Observer 1: " + l));
-        Disposable disposable2 = seconds.subscribe(l -> System.out.println("Observer 2: " + l));
-        sleep(5000);
-        disposables.addAll(disposable1, disposable2);
-        disposables.dispose();
-        //sleep 5 seconds to prove
-        //there are no more emissions
-        sleep(5000);
+        Observable<Integer> source = Observable.create(new ObservableOnSubscribe<Integer>() {
+            @Override
+            public void subscribe(ObservableEmitter<Integer> triger) throws Exception {
+                try {
+                    for (int i = 0; i < 2; i++) {
+                        triger.onNext(i);
+                        System.out.println(i);
 
-//        latch.await();
+                        if (triger.isDisposed())
+                            return;
+                    }
+                    triger.onComplete();
+                } catch (Throwable e) {
+                    triger.onError(e);
+                }
+            }
+        });
 
 
+        sleep(500);
     }
 
     public static void sleep(long millis) {
